@@ -1,9 +1,15 @@
 const express = require('express');
 
 const app = express();
+app.use(express.json());
+
 const PORT = 3333;
 
 app.get('/courses', (request, response) => {
+  // http://localhost:3333/courses?page=2 // query params
+  const query = request.query;
+  console.log(query); // { page: '2' }
+
   const data = [
     {
       id: 1,
@@ -19,6 +25,9 @@ app.get('/courses', (request, response) => {
 });
 
 app.post('/courses', (request, response) => {
+  const body = request.body; // body params
+  console.log(body);
+
   const data = [
     {
       id: 1,
@@ -38,6 +47,9 @@ app.post('/courses', (request, response) => {
 });
 
 app.put('/courses/:id', (request, response) => {
+  const { id } = request.params; // route params
+  console.log(id);
+
   const data = [
     {
       id: 1,
