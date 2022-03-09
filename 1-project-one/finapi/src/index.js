@@ -34,6 +34,11 @@ function getBalance(statement) {
   }, 0); // valor inicial do reduce
 }
 
+// get all customers
+app.get('/customers', (request, response) => {
+  return response.status(200).json({ customers: customers });
+});
+
 // create account
 app.post('/account', (request, response) => {
   const { cpf, name } = request.body;
@@ -56,7 +61,34 @@ app.post('/account', (request, response) => {
   return response.status(201).json(customers);
 });
 
-// get customer statement by cpf
+// get account
+app.get('/account', verifyIfExistsAccountCpf, (request, response) => {
+  const { customer } = request;
+  return response.json(customer);
+});
+
+// update account
+app.put('/account', verifyIfExistsAccountCpf, (request, response) => {
+  const { name } = request.body;
+  const { customer } = request;
+
+  customer.name = name;
+
+  return response
+    .status(201)
+    .json({ message: 'Account updated', account: customer });
+});
+
+// delete account
+app.delete('/account', verifyIfExistsAccountCpf, (request, response) => {
+  const { customer } = request;
+
+  customers.splice(customer, 1);
+
+  return response.status(200).json({ message: 'Customer deleted', customers });
+});
+
+// get customer statement
 app.get('/statement', verifyIfExistsAccountCpf, (request, response) => {
   const { customer } = request; // customer from middleware
 
@@ -65,7 +97,23 @@ app.get('/statement', verifyIfExistsAccountCpf, (request, response) => {
   });
 });
 
-// to do deposit
+// get customer statement by date
+app.get('/statement/date', verifyIfExistsAccountCpf, (request, response) => {
+  const { customer } = request; // customer from middleware
+  const { date } = request.query;
+
+  const dateFormat = new Date(date + ' 00:00');
+
+  const statement = customer.statement.filter(
+    (statement) =>
+      statement.created_at.toDateString() ===
+      new Date(dateFormat).toDateString()
+  );
+
+  return response.json(statement);
+});
+
+// deposit operation
 app.post('/deposit', verifyIfExistsAccountCpf, (request, response) => {
   const { description, amount } = request.body;
   const { customer } = request; // using middleware customer | request
@@ -82,7 +130,7 @@ app.post('/deposit', verifyIfExistsAccountCpf, (request, response) => {
   return response.status(201).json(statementOperation);
 });
 
-// withdraw | saque
+// withdraw operation
 app.post('/withdraw', verifyIfExistsAccountCpf, (request, response) => {
   const { amount } = request.body;
   const { customer } = request; // using middleware customer | request
@@ -102,39 +150,12 @@ app.post('/withdraw', verifyIfExistsAccountCpf, (request, response) => {
   return response.status(201).json(statementOperation);
 });
 
-// get customer statement by date
-app.get('/statement/date', verifyIfExistsAccountCpf, (request, response) => {
-  const { customer } = request; // customer from middleware
-  const { date } = request.query;
-
-  const dateFormat = new Date(date + ' 00:00');
-
-  const statement = customer.statement.filter(
-    (statement) =>
-      statement.created_at.toDateString() ===
-      new Date(dateFormat).toDateString()
-  );
-
-  return response.json(statement);
-});
-
-// update customer info
-app.put('/account', verifyIfExistsAccountCpf, (request, response) => {
-  const { name } = request.body;
-  const { customer } = request;
-
-  customer.name = name;
-
-  return response
-    .status(201)
-    .json({ message: 'Account updated', account: customer });
-});
-
-app.get('/account', verifyIfExistsAccountCpf, (request, response) => {
+// get balance
+app.get('/balance', verifyIfExistsAccountCpf, (request, response) => {
   const { customer } = request;
   const balance = getBalance(customer.statement);
 
-  return response.json({ customer: customer, balance });
+  return response.json({ customer, balance });
 });
 
 // server
