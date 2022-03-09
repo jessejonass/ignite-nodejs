@@ -100,6 +100,22 @@ app.post('/withdraw', verifyIfExistsAccountCpf, (request, response) => {
   return response.status(201).json(statementOperation);
 });
 
+// get customer statement by date
+app.get('/statement/date', verifyIfExistsAccountCpf, (request, response) => {
+  const { customer } = request; // customer from middleware
+  const { date } = request.query;
+
+  const dateFormat = new Date(date + ' 00:00');
+
+  const statement = customer.statement.filter(
+    (statement) =>
+      statement.created_at.toDateString() ===
+      new Date(dateFormat).toDateString()
+  );
+
+  return response.json(statement);
+});
+
 // server
 app.listen(PORT, () => {
   console.log(`\u001b[36m| server running on port: ${PORT} |`);
