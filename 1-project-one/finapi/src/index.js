@@ -60,7 +60,9 @@ app.post('/account', (request, response) => {
 app.get('/statement', verifyIfExistsAccountCpf, (request, response) => {
   const { customer } = request; // customer from middleware
 
-  return response.json(customer.statement);
+  return response.json({
+    statement: customer.statement,
+  });
 });
 
 // to do deposit
@@ -114,6 +116,25 @@ app.get('/statement/date', verifyIfExistsAccountCpf, (request, response) => {
   );
 
   return response.json(statement);
+});
+
+// update customer info
+app.put('/account', verifyIfExistsAccountCpf, (request, response) => {
+  const { name } = request.body;
+  const { customer } = request;
+
+  customer.name = name;
+
+  return response
+    .status(201)
+    .json({ message: 'Account updated', account: customer });
+});
+
+app.get('/account', verifyIfExistsAccountCpf, (request, response) => {
+  const { customer } = request;
+  const balance = getBalance(customer.statement);
+
+  return response.json({ customer: customer, balance });
 });
 
 // server
