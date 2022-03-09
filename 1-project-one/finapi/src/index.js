@@ -51,6 +51,25 @@ app.get('/statement', verifyIfExistsAccountCpf, (request, response) => {
   return response.json(customer.statement);
 });
 
+// to do deposit
+app.post('/deposit', verifyIfExistsAccountCpf, (request, response) => {
+  const { description, amount } = request.body;
+  const { customer } = request; // using middleware customer | request
+
+  console.log(request);
+
+  const statementOperation = {
+    description,
+    amount,
+    type: 'credit',
+    created_at: new Date(),
+  };
+
+  customer.statement.push(statementOperation);
+
+  return response.status(201).json(statementOperation);
+});
+
 app.listen(PORT, () => {
   console.log(`\u001b[36m| server running on port: ${PORT} |`);
 });
