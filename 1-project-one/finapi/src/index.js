@@ -22,6 +22,18 @@ function verifyIfExistsAccountCpf(request, response, next) {
   return next();
 }
 
+// função para pegar saldo que tenho em conta
+function getBalance(statement) {
+  // pega todos os valores (entrada ou saída) e transforma em um só
+  return statement.reduce((acc, operation) => {
+    if (operation.type === 'credit') {
+      return acc + operation.amount;
+    } else if (operation.type === 'debit') {
+      return acc - operation.amount;
+    }
+  }, 0); // valor inicial do reduce
+}
+
 // create account
 app.post('/account', (request, response) => {
   const { cpf, name } = request.body;
@@ -56,8 +68,6 @@ app.post('/deposit', verifyIfExistsAccountCpf, (request, response) => {
   const { description, amount } = request.body;
   const { customer } = request; // using middleware customer | request
 
-  console.log(request);
-
   const statementOperation = {
     description,
     amount,
@@ -70,6 +80,27 @@ app.post('/deposit', verifyIfExistsAccountCpf, (request, response) => {
   return response.status(201).json(statementOperation);
 });
 
+// withdraw | saque
+app.post('/withdraw', verifyIfExistsAccountCpf, (request, response) => {
+  const { amount } = request.body;
+  const { customer } = request; // using middleware customer | request
+
+  const balance = getBalance(customer.statement);
+
+  if (balance < amount)
+    return response.status(400).json({ Error: 'Insufficient funds' });
+
+  const statementOperation = {
+    amount,
+    type: 'debit',
+    created_at: new Date(),
+  };
+
+  customer.statement.push(statementOperation);
+  return response.status(201).json(statementOperation);
+});
+
+// server
 app.listen(PORT, () => {
   console.log(`\u001b[36m| server running on port: ${PORT} |`);
 });
