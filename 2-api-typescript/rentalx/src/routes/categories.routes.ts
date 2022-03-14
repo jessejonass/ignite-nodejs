@@ -1,15 +1,24 @@
 import { Router } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 
-const categoriesRoutes = Router();
+import { Category } from '../model/Category'; // model | type
 
-const categories = [];
+const categoriesRoutes = Router(); // using /categories from server.ts
+
+const categories: Category[] = [];
 
 // categories/
 categoriesRoutes.post('/', (request, response) => {
   const { name, description } = request.body;
 
-  const category = { id: uuidv4(), name, description };
+  // instantiate to run constructor (with ID)
+  const category = new Category(); //
+
+  Object.assign(category, {
+    // id: uuidv4(), // create id on model
+    name,
+    description,
+    created_at: new Date(),
+  });
 
   categories.push(category);
 
