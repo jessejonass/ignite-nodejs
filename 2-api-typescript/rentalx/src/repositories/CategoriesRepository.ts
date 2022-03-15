@@ -13,8 +13,13 @@ class CategoriesRepository {
     this.categories = [];
   }
 
+  // list all
+  list(): Category[] {
+    return this.categories;
+  }
+
   // create new category
-  create({ name, description }: ICreateCategoryDTO): void {
+  create({ name, description }: ICreateCategoryDTO): Category {
     // instantiate to run constructor from model (with ID)
     const category = new Category(); //
 
@@ -26,6 +31,7 @@ class CategoriesRepository {
     });
 
     this.categories.push(category);
+    return category;
   }
 }
 
