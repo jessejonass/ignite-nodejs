@@ -18,6 +18,13 @@ class CategoriesRepository {
     return this.categories;
   }
 
+  // list by name
+  findByName(name: string): Category {
+    const category = this.categories.find(category => category.name === name);
+
+    return category;
+  }
+
   // create new category
   create({ name, description }: ICreateCategoryDTO): Category {
     // instantiate to run constructor from model (with ID)
