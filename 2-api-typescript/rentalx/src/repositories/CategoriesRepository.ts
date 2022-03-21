@@ -1,31 +1,27 @@
 import { Category } from '../model/Category'; // model | type
+import {
+  ICategoriesRepository,
+  ICreateCategoryDTO,
+} from './ICategoriesRepository';
 
-// DTO - Data Transfer Object
-interface ICreateCategoryDTO {
-  name: string;
-  description: string;
-}
-
-class CategoriesRepository {
+// using the contract / interface / implementation
+class CategoriesRepository implements ICategoriesRepository {
   private categories: Category[] = [];
 
   constructor() {
     this.categories = [];
   }
 
-  // list all
   list(): Category[] {
     return this.categories;
   }
 
-  // list by name
   findByName(name: string): Category {
     const category = this.categories.find(category => category.name === name);
 
     return category;
   }
 
-  // create new category
   create({ name, description }: ICreateCategoryDTO): Category {
     // instantiate to run constructor from model (with ID)
     const category = new Category(); //
