@@ -1,20 +1,14 @@
-import { CategoriesRepository } from '../repositories/CategoriesRepository';
+import { ICategoriesRepository } from '../repositories/ICategoriesRepository';
 
 interface IRequest {
   name: string;
   description: string;
 }
 
-/**
- * [x] define return type
- * [x] change return error
- * [x] access repository
- */
-
-// service not should know the response type
-
+// service not should know the response (express) type
 class CreateCategoryService {
-  constructor(private categoriesRepository: CategoriesRepository) {}
+  // ICategoriesRepository: contract/type -> Liskov
+  constructor(private categoriesRepository: ICategoriesRepository) {}
 
   execute({ name, description }: IRequest): void {
     // const categoriesRepository = new CategoriesRepository(); // DIP
