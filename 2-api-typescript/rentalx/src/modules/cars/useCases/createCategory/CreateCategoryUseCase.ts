@@ -1,4 +1,4 @@
-import { ICategoriesRepository } from '../repositories/ICategoriesRepository';
+import { ICategoriesRepository } from '../../repositories/ICategoriesRepository';
 
 interface IRequest {
   name: string;
@@ -6,7 +6,7 @@ interface IRequest {
 }
 
 // service not should know the response (express) type
-class CreateCategoryService {
+class CreateCategoryUseCase {
   // ICategoriesRepository: contract/type -> Liskov
   constructor(private categoriesRepository: ICategoriesRepository) {}
 
@@ -22,4 +22,4 @@ class CreateCategoryService {
   }
 }
 
-export { CreateCategoryService };
+export { CreateCategoryUseCase };
