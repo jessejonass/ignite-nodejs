@@ -1,4 +1,4 @@
-import { Category } from '../model/Category'; // model | type
+import { Category } from '../../model/Category'; // model | type
 import {
   ICategoriesRepository,
   ICreateCategoryDTO,
