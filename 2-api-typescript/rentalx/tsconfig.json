@@ -86,6 +86,7 @@
     // "allowUnreachableCode": true,
 
     // "skipDefaultLibCheck": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   }
 }
