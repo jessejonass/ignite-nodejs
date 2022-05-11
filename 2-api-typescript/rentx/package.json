@@ -4,7 +4,10 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules --respawn --poll src/server.ts"
+    "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules --respawn --poll src/server.ts",
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
+    "migration:run": "ts-node-dev ./node_modules/typeorm/cli migration:run -d \"./src/database/index.ts\"",
+    "migration:revert": "ts-node-dev ./node_modules/typeorm/cli migration:revert -d \"./src/database/index.ts\""
   },
   "dependencies": {
     "csv-parse": "^5.0.4",
